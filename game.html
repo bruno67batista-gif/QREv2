@@ -1699,33 +1699,56 @@
       );
       pauseBtn.addEventListener("click", togglePause);
 
-      async function loadGameProfile() {
-        try {
-          const response = await fetch("/api/me", {
-            credentials: "same-origin",
-          });
-          const data = await response.json();
-          if (!data.user) {
-            window.location.href = "index.html";
-            return;
-          }
-          gameProfile = data;
-          activePowerups = (data.inventory || [])
-            .filter((i) => i.active)
-            .map((i) => i.item_id);
-          const equipped1 = (data.inventory || []).find((i) => i.equipped_p1);
-          const equipped2 = (data.inventory || []).find((i) => i.equipped_p2);
-          const asset1 =
-            data.catalog?.[equipped1?.item_id]?.asset || "assets/player.png";
-          const asset2 =
-            data.catalog?.[equipped2?.item_id]?.asset || "assets/player2.png";
-          playerImage.src = asset1;
-          player2Image.src = asset2;
-          startBtn.disabled = false;
-        } catch (e) {
-          window.location.href = "index.html";
-        }
-      }
+async function loadGameProfile() {
+  try {
+    const response = await fetch(
+      "https://qre-backend.onrender.com/api/me",
+      {
+        credentials: "include",
+      },
+    );
+
+    const data = await response.json();
+
+    if (!response.ok || !data.user) {
+      throw new Error("Não foi possível carregar o perfil.");
+    }
+
+    gameProfile = data;
+
+    activePowerups = (data.inventory || [])
+      .filter((i) => i.active)
+      .map((i) => i.item_id);
+
+    const equipped1 = (data.inventory || []).find(
+      (i) => i.equipped_p1,
+    );
+
+    const equipped2 = (data.inventory || []).find(
+      (i) => i.equipped_p2,
+    );
+
+    const asset1 =
+      data.catalog?.[equipped1?.item_id]?.asset ||
+      "assets/player.png";
+
+    const asset2 =
+      data.catalog?.[equipped2?.item_id]?.asset ||
+      "assets/player2.png";
+
+    playerImage.src = asset1;
+    player2Image.src = asset2;
+
+    startBtn.disabled = false;
+  } catch (e) {
+    console.error("Erro ao carregar o perfil:", e);
+    overlayKicker.textContent = "ERRO DE CONEXÃO";
+    overlayTitle.textContent = "Não foi possível carregar o jogo";
+    overlayText.textContent =
+      "Verifique sua conexão e faça login novamente no menu.";
+    startBtn.disabled = true;
+  }
+}
       loadGameProfile().then(() => {
         resize();
         resetGame();
