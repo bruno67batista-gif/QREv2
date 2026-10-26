@@ -546,7 +546,7 @@
 
       async function api(path, options = {}) {
       const response = await fetch(
-      API_BASE + path.replace(/^\+/, ""),
+      API_BASE + path.replace(/^\/+/, ""),
       {
       credentials: "include",
       headers: {
