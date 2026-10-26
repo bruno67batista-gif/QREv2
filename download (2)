@@ -1,0 +1,36 @@
+modules = ["nodejs-24", "python-3.11"]
+
+[[ports]]
+localPort = 5000
+externalPort = 80
+
+[deployment]
+router = "application"
+deploymentTarget = "autoscale"
+
+[deployment.postBuild]
+args = ["pnpm", "store", "prune"]
+env = { "CI" = "true" }
+
+[workflows]
+runButton = "QRErwk Preview"
+
+[[workflows.workflow]]
+name = "QRErwk Preview"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python -m pip install -r requirements.txt && PORT=5000 exec python -u main.py"
+waitForPort = 5000
+
+[workflows.workflow.metadata]
+outputType = "webview"
+
+[agent]
+stack = "PNPM_WORKSPACE"
+expertMode = true
+
+[postMerge]
+path = "scripts/post-merge.sh"
+timeoutMs = 20000

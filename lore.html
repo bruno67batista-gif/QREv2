@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content='width=device-width, initial-scale=1.0' />
+    <link rel="icon" type="image/png" href="/assets/logoQRE.png?v=2" />
+    <title>O Quarto Reich Estelar</title>
+
+    <style>
+      :root {
+        --preto: #000000;
+        --amarelo: #c4a400;
+        --ciano: #00e1ff;
+        --texto: #f1f0e8;
+        --azulpastel: #4d587a;
+        --branco: #ffffff;
+        --vermelho: #9c0000;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+        background-image: 
+           url("assets/backgroundlore.png");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        color: var(--texto);
+        font-family: Arial, sans-serif;
+        overflow: hidden; /* Evita barras de rolagem na tela principal */
+      }
+
+      /* CAIXA PRINCIPAL (Fica parada no centro) */
+      .lore-box {
+        width: min(720px, calc(100% - 40px));
+        height: 500px; /* Altura fixa para criar a "janela" de leitura */
+        padding: 36px;
+        overflow: hidden; /* Esconde o texto que sai da caixa */
+
+        /* Fundo escuro para ler melhor */
+        position: relative;
+      }
+
+      /* TEXTO INTERNO (Este é o elemento que vai se mover) */
+      .lore-content {
+        animation: scroll-up 90s linear infinite;
+      }
+
+      /* Pausa o texto quando o usuário passa o mouse por cima */
+      .lore-box:hover .lore-content {
+        animation-play-state: paused;
+      }
+
+      /* ANIMAÇÃO DE CRÉDITOS */
+      @keyframes scroll-up {
+        0% {
+          transform: translateY(400px); /* Começa embaixo, dentro da caixa */
+        }
+        100% {
+          transform: translateY(-110%); /* Sobe até sumir completamente no topo */
+        }
+      }
+
+      /* Estilos do Texto */
+      .lore-box p {
+        color: var(--amarelo);
+        line-height: 1.6;
+        font-size: 1.1rem;
+      }
+
+      .lore-box h1 {
+        color: var(--texto);
+        text-align: center;
+      }
+
+      .lore-box h2 {
+        color: var(--texto);
+        margin-top: 40px;
+      }
+
+      .lore-box .destaque-vermelho {
+        color: var(--vermelho);
+      }
+
+      /* Botão Voltar */
+      .back-button {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 12px 30px;
+        width: fit-content;
+        max-width: calc(100vw - 32px);
+        min-height: 50px;
+        color: var(--branco);
+        text-decoration: none;
+        background: #1e385e;
+        transition: 0.2s;
+        cursor: pointer;
+        background-image: url("assets/botao1.png");
+        background-size: 100% 100%;
+      }
+
+      
+      .back-button:hover {
+          border-color: var(--amarelo);
+          background-image: url("assets/botao2.png");
+          background-size: 100% 100%;
+          color: var(--vermelho);
+          transform: scale(1.05);
+        }
+    </style>
+  </head>
+
+<body> 
+
+  <a href="index.html" class="back-button">
+    Voltar ao menu
+  </a>
+
+  <main class="lore-box" aria-label="LORE">
+    <!-- Nova div interna que segura todo o texto para a animação funcionar -->
+    <div class="lore-content">
+      <h1>O QUARTO REICH ESTELAR</h1>
+      <h2>1945</h2>
+      <p>
+        A Segunda Guerra Mundial estava perdida.<br><br>
+        Berlim havia sido cercada, as tropas alemãs recuavam em todas as frentes e o fim do regime nazista parecia inevitável. Nos últimos dias do conflito, porém, um projeto secreto que havia permanecido escondido durante anos finalmente foi ativado.<br><br>
+        Nos subterrâneos de uma instalação localizada nas montanhas da Turíngia, cientistas alemães trabalhavam em algo que jamais deveria ter existido: <b>o Projeto Morgenstern</b>.<br><br>
+        Oficialmente, era um programa de pesquisa aeroespacial. Na realidade, tratava-se da construção de enormes naves capazes de escapar da atmosfera terrestre. Quando tudo estava perdido, Hitler recebeu uma última proposta.<br><br>
+        Fugir.<br><br>
+        Na madrugada de <b>30 de abril de 1945</b>, enquanto o mundo acreditava que Adolf Hitler havia cometido suicídio em Berlim, uma pequena frota de naves deixou secretamente uma instalação subterrânea na Alemanha. Centenas de soldados, oficiais, cientistas e membros do alto comando embarcaram.<br><br>
+        Hitler estava entre eles. A frota desapareceu nos céus antes que os Aliados pudessem perceber o que havia acontecido.<br><br>
+        Para o mundo, Hitler estava morto.<br><br>
+        Para aqueles que haviam fugido, a guerra apenas havia começado.
+      </p>
+
+      <h2>O EXÍLIO</h2>
+      <p>
+        Durante décadas, a frota permaneceu escondida no espaço.<br><br>
+        Os primeiros anos foram marcados pelo caos. As naves não tinham recursos suficientes para retornar à Terra e seus tripulantes descobriram rapidamente que a tecnologia desenvolvida pelo regime estava longe de ser perfeita. Eles encontraram refúgio em uma instalação abandonada na Lua.<br><br>
+        Ali construíram uma colônia.<br><br>
+        Décadas se passaram.<br><br>
+        A população cresceu.<br><br>
+        Os sobreviventes da antiga Alemanha transformaram a base lunar em uma gigantesca fortaleza industrial. Novas gerações nasceram sem jamais pisar na Terra, Hitler envelheceu, mas o regime não desapareceu, pelo contrário.<br><br>
+        Sua ideologia foi transformada em uma espécie de doutrina militar e autoritária transmitida por gerações. A antiga Alemanha nazista deixou de existir, mas sua estrutura política sobreviveu sob outro nome:<br><br>
+        <b>Das Sternenreich (SS+)</b><br>O QUARTO REICH ESTELAR
+      </p>
+
+      <h2>2026</h2>
+      <p>
+        A humanidade havia esquecido.<br><br>
+        Setenta e um anos haviam se passado.<br><br>
+        A Terra possuía estações espaciais, colônias em Marte e tecnologia muito mais avançada do que qualquer coisa imaginada em 1945. Mas ninguém sabia que, acima da Lua, uma civilização inteira observava silenciosamente o planeta.<br><br>
+        Em <b>5 de setembro de 2026</b>, telescópios de diferentes países registraram uma anomalia.<br><br>
+        Primeiro, parecia apenas uma pequena sombra;<br>
+        Depois, outra;<br>
+        E outra;<br>
+        Dezenas;<br>
+        <b>Centenas</b>.<br><br>
+        Objetos gigantescos começaram a surgir do lado escuro da Lua.<br><br>
+        Naves.<br>
+        Uma frota inteira.<br><br>
+        As primeiras imagens mostravam enormes cruzadores negros, acompanhados por caças e transportes militares, no centro da formação estava a maior nave já construída.<br>
+        Seu nome:<br><br>
+        <b>SIEGFRIED</b><br><br>
+        A bordo dela, um homem de mais de cem anos observava a Terra através de uma enorme janela. Adolf Hitler. O tempo havia transformado seu corpo, mas não sua ambição.<br><br>
+        Ele havia passado oito décadas esperando aquele momento.<br><br>
+        — A Terra nos esqueceu<br><br>
+        Um oficial permaneceu em silêncio.<br><br>
+        Hitler continuou:<br><br>
+        — <b>Então faremos com que ela se lembre.</b><br><br>
+        Atrás dele, milhares de soldados aguardavam ordens. Não eram mais os soldados de 1945, eram soldados nascidos no espaço, treinados desde a infância e equipados com tecnologia que a humanidade terrestre sequer conhecia.<br><br>
+        A frota começou a avançar.<br><br>
+        A guerra que deveria ter terminado em 1945 estava prestes a começar novamente.<br><br>
+        Mas desta vez...
+      </p>
+
+      <h2><span class="destaque-vermelho">O campo de batalha será o Sistema Solar.</span></h2>
+
+    </div>
+
+  </main>
+  <b>PASSE O MOUSE PARA PAUSAR O AVANÇO</b>
+</body>  
+</html>

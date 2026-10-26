@@ -1,0 +1,889 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="assets/logoQRE.png" />
+    <title>O Quarto Reich Estelar</title>
+    <style>
+      /* Paleta, layout base e efeitos globais */
+      :root {
+        --black: #05070c;
+        --panel: rgba(8, 12, 22, 0.94);
+        --gold: #c4a400;
+        --cyan: #00e1ff;
+        --text: #f1f0e8;
+        --red: #fc2819;
+        --line: #46516b;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: #03050b url("assets/bgmenu.png") center/cover fixed
+          no-repeat;
+        color: var(--text);
+        font-family: Arial, sans-serif;
+        display: grid;
+        place-items: center;
+        overflow-x: hidden;
+      }
+
+      .intro {
+        position: fixed;
+        inset: 0;
+        background: #000;
+        z-index: 30;
+      }
+      .intro video {
+        width: 100%;
+        height: 100%;
+        object-fit: fill;
+      }
+      .skip {
+        position: absolute;
+        right: 24px;
+        bottom: 24px;
+      }
+      .intro-message {
+        position: absolute;
+        right: 24px;
+        bottom: 88px;
+        left: 24px;
+        margin: 0;
+        padding: 10px 14px;
+        border-radius: 6px;
+        background: rgba(0, 0, 0, 0.72);
+        text-align: center;
+      }
+      /* Botões, navegação e painéis */
+      .button {
+        border: 0;
+        cursor: pointer;
+        color: white;
+        background: url("assets/botao1.png") center/100% 100%;
+        padding: 14px 20px;
+        font-weight: bold;
+        font-size: 15px;
+        text-align: center;
+        min-height: 48px;
+        transition:
+          transform 0.2s,
+          filter 0.2s;
+      }
+      .button:hover {
+        background-image: url("assets/botao2.png");
+        color: var(--red);
+        transform: scale(1.03);
+      }
+      button:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+        transform: none;
+      }
+      .shell {
+        position: relative;
+        z-index: 1;
+        width: min(540px, calc(100% - 28px));
+        padding: 26px 20px;
+        text-align: center;
+        animation: enter 0.6s both;
+      }
+      .logo {
+        width: min(230px, 70%);
+        max-height: 100px;
+        object-fit: contain;
+        margin-bottom: 6px;
+      }
+      .version {
+        font-size: 12px;
+        color: #c4c8d4;
+        letter-spacing: 2px;
+        margin: 8px;
+        position: relative;
+        top: 70px;
+      }
+      .menu-buttons {
+        display: grid;
+        gap: 10px;
+        margin: 20px auto 0;
+        width: min(330px, 100%);
+        position: relative;
+        top: 50px;
+      }
+      .menu-buttons .button {
+        width: 100%;
+      }
+      .menu-buttons a.button {
+        display: grid;
+        place-items: center;
+        text-decoration: none;
+      }
+      .screen {
+        position: fixed;
+        inset: 0;
+        z-index: 10;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        background: rgba(0, 0, 0, 0.72);
+        backdrop-filter: blur(5px);
+      }
+      .screen.open {
+        display: flex;
+        animation: fade 0.2s;
+      }
+      .panel {
+        position: relative;
+        width: min(900px, 100%);
+        max-height: min(86vh, 850px);
+        overflow: auto;
+        padding: 28px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        box-shadow: 0 0 35px #000;
+        border-radius: 8px;
+        text-align: left;
+      }
+      .panel.narrow {
+        width: min(480px, 100%);
+      }
+      .panel h2 {
+        margin: 0 40px 18px 0;
+        color: var(--cyan);
+        letter-spacing: 2px;
+      }
+      .close {
+        position: absolute;
+        right: 12px;
+        top: 10px;
+        background: transparent;
+        border: 1px solid #778094;
+        color: white;
+        font-size: 22px;
+        width: 38px;
+        height: 38px;
+        cursor: pointer;
+      }
+      .tabs {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin: 16px 0;
+      }
+      .tab {
+        padding: 10px 14px;
+        background: #151b29;
+        border: 1px solid #3d465b;
+        color: #e7e9ef;
+        cursor: pointer;
+      }
+      .tab.active {
+        border-color: var(--cyan);
+        color: var(--cyan);
+      }
+      /* Loja, formulários e pontuação */
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+        gap: 12px;
+      }
+      .card {
+        background: rgba(22, 28, 43, 0.9);
+        border: 1px solid #333e55;
+        padding: 16px;
+        text-align: center;
+        min-height: 150px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .product-visual {
+        height: 74px;
+        width: 100%;
+        display: grid;
+        place-items: center;
+        color: var(--cyan);
+        font-size: 36px;
+      }
+      .product-visual img {
+        max-width: 95px;
+        max-height: 68px;
+        object-fit: contain;
+      }
+      .card h3 {
+        font-size: 15px;
+        margin: 0;
+      }
+      .price {
+        color: #f6d45c;
+        font-size: 13px;
+      }
+      .card .button {
+        width: 100%;
+        font-size: 12px;
+        padding: 10px;
+        min-height: 38px;
+      }
+      .field {
+        display: grid;
+        gap: 6px;
+        margin: 12px 0;
+      }
+      .field label {
+        font-size: 13px;
+        color: #d2d6e1;
+      }
+      .field input {
+        width: 100%;
+        padding: 12px;
+        background: #080b13;
+        color: white;
+        border: 1px solid #4a556e;
+        border-radius: 3px;
+      }
+      .form-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 18px;
+      }
+      .message {
+        min-height: 22px;
+        color: #ffb15c;
+        font-size: 13px;
+        margin-top: 10px;
+      }
+      .muted {
+        color: #aeb5c6;
+        font-size: 13px;
+        line-height: 1.5;
+      }
+      .balance {
+        font-size: 14px;
+        color: #f6d45c;
+        margin-left: auto;
+      }
+      .shop-head {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        flex-wrap: wrap;
+        padding-right: 44px;
+      }
+      .leaderboard {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .leaderboard th,
+      .leaderboard td {
+        padding: 10px;
+        border-bottom: 1px solid #30384a;
+        text-align: left;
+      }
+      .leaderboard th {
+        color: var(--cyan);
+      }
+      .personal {
+        padding: 12px;
+        background: #172334;
+        margin-bottom: 14px;
+      }
+      .hidden {
+        display: none !important;
+      }
+      .auth-choice {
+        display: flex;
+        gap: 8px;
+      }
+      .auth-choice button {
+        flex: 1;
+      }
+      /* Transições e comportamento responsivo */
+      .menu-enter {
+        animation: slideLeft 0.5s both;
+      }
+      .auth-exit {
+        animation: slideRight 0.4s both;
+      }
+      @keyframes enter {
+        from {
+          opacity: 0;
+          transform: translateY(18px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes slideLeft {
+        from {
+          opacity: 0;
+          transform: translateX(-55px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+      @keyframes slideRight {
+        to {
+          opacity: 0;
+          transform: translateX(70px);
+        }
+      }
+      @keyframes fade {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      @media (max-width: 520px) {
+        .panel {
+          padding: 22px 14px;
+        }
+        .shell {
+          padding: 16px 10px;
+        }
+        .form-actions {
+          grid-template-columns: 1fr;
+        }
+        .shop-head {
+          align-items: flex-start;
+        }
+      }
+      #welcome {
+        position: relative;
+        top: 60px;
+      }
+      .play-panel {
+        overflow: hidden;
+      }
+      .play-panel .menu-buttons {
+        top: 0;
+      }
+      .option-panel {
+        overflow: hidden;
+      }
+      .option-panel .menu-buttons {
+        top: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Vídeo de introdução -->
+    <div class="intro" id="introScreen">
+      <video id="introVideo" autoplay muted playsinline>
+        <source src="assets/introducao.mp4" type="video/mp4" /></video
+      ><button class="button skip" id="skipIntro">PULAR INTRODUÇÃO</button>
+      <div
+        class="message intro-message hidden"
+        id="introError"
+        role="status"
+        aria-live="polite"
+      >
+        Não foi possível reproduzir o vídeo. Clique em “PULAR INTRODUÇÃO” para
+        continuar.
+      </div>
+    </div>
+    <!-- Autenticação e menu principal -->
+    <main class="shell" id="mainShell">
+      <div class="version">VERSÃO 2.0.0.0</div>
+      <section id="authBox" class="hidden">
+        <h2 id="authTitle">Acesso ao sistema</h2>
+        <p class="muted">Entre na sua conta ou crie uma</p>
+        <div class="auth-choice">
+          <button class="tab active" id="showLogin">Logar</button
+          ><button class="tab" id="showRegister">Criar conta</button>
+        </div>
+        <form id="authForm">
+          <div class="field">
+            <label for="nickname">Nickname</label
+            ><input
+              id="nickname"
+              autocomplete="username"
+              minlength="3"
+              maxlength="20"
+              required
+            />
+          </div>
+          <div class="field">
+            <label for="password">Senha (mínimo 8 caracteres)</label
+            ><input
+              id="password"
+              type="password"
+              autocomplete="current-password"
+              minlength="8"
+              maxlength="128"
+              required
+            />
+          </div>
+          <button
+            class="button"
+            id="authSubmit"
+            type="submit"
+            style="width: 100%"
+          >
+            ENTRAR
+          </button>
+          <div class="message" id="authMessage" role="status"></div>
+        </form>
+      </section>
+      <section id="menuBox" class="hidden">
+        <p id="welcome" class="muted"></p>
+        <nav class="menu-buttons" id="menuButtons">
+          <button class="button" data-screen="playScreen">JOGAR</button
+          ><button class="button" data-screen="shopScreen">LOJA</button
+          ><button class="button" data-screen="scoreScreen">PONTUAÇÃO</button
+          ><button class="button" data-screen="optionsScreen">OPÇÕES</button
+          ><a class="button" href="lore.html">LORE</a>
+        </nav>
+      </section>
+    </main>
+    <!-- Painéis de jogo, loja, pontuação e conta -->
+    <div class="screen" id="playScreen">
+      <section class="panel narrow play-panel">
+        <button class="close" aria-label="Fechar">×</button>
+        <h2>ESCOLHA O MODO</h2>
+        <div class="menu-buttons">
+          <a class="button" href="game.html?mode=singular">CLÁSSICO</a
+          ><a class="button" href="game.html?mode=pesadelo">PESADELO</a
+          ><a class="button" href="game.html?mode=dupla">DUPLA</a>
+        </div>
+      </section>
+    </div>
+    <div class="screen" id="shopScreen">
+      <section class="panel">
+        <button class="close" aria-label="Fechar">×</button>
+        <div class="shop-head">
+          <h2>LOJA</h2>
+          <div class="balance">MOEDAS: <strong id="coinBalance">0</strong></div>
+        </div>
+        <div class="tabs">
+          <button class="tab active" data-shop="inventory">INVENTÁRIO</button
+          ><button class="tab" data-shop="ships">NAVES</button
+          ><button class="tab" data-shop="powerups">POWER-UPS</button>
+        </div>
+        <div id="shopContent"></div>
+        <div class="message" id="shopMessage" role="status"></div>
+      </section>
+    </div>
+    <div class="screen" id="scoreScreen">
+      <section class="panel">
+        <button class="close" aria-label="Fechar">×</button>
+        <h2>PONTUAÇÃO</h2>
+        <div class="tabs">
+          <button class="tab active" data-score-mode="singular">CLÁSSICO</button
+          ><button class="tab" data-score-mode="pesadelo">PESADELO</button
+          ><button class="tab" data-score-mode="dupla">DUPLA</button>
+        </div>
+        <div id="scoreContent"><p class="muted">Carregando placar...</p></div>
+      </section>
+    </div>
+    <div class="screen" id="optionsScreen">
+      <section class="panel narrow option-panel">
+        <button class="close" aria-label="Fechar">×</button>
+        <h2>OPÇÕES</h2>
+        <p id="optionUser"></p>
+        <div class="menu-buttons">
+          <button class="button" id="switchAccount">TROCAR DE CONTA</button
+          ><button class="button" id="deleteAccount">EXCLUIR CONTA</button>
+        </div>
+        <div class="message" id="optionsMessage"></div>
+        <p class="muted">
+          A exclusão remove permanentemente o perfil, os recordes, as moedas e o
+          inventário dessa conta.
+        </p>
+      </section>
+    </div>
+    <div class="screen" id="confirmScreen">
+      <section class="panel narrow">
+        <button class="close" aria-label="Fechar">×</button>
+        <h2 id="confirmTitle">CONFIRMAR</h2>
+        <p id="confirmText" class="muted"></p>
+        <form id="confirmForm">
+          <div class="field">
+            <label for="confirmPassword">Digite sua senha para confirmar</label
+            ><input
+              id="confirmPassword"
+              type="password"
+              autocomplete="current-password"
+              required
+            />
+          </div>
+          <div class="form-actions">
+            <button class="button" type="submit" id="confirmAction">
+              CONFIRMAR</button
+            ><button class="tab" type="button" id="cancelConfirm">
+              CANCELAR
+            </button>
+          </div>
+          <div class="message" id="confirmMessage"></div>
+        </form>
+      </section>
+    </div>
+    <!-- Interações e integração com a API -->
+    <script>
+      // Estado da página, chamadas da API e controle das telas
+      const $ = (id) => document.getElementById(id);
+      let user = null,
+        inventory = [],
+        catalog = {},
+        scores = [],
+        authMode = "login",
+        shopTab = "inventory",
+        inventorySub = "ships",
+        scoreMode = "singular",
+        confirmAction = null;
+      async function api(path, options = {}) {
+        const response = await fetch("/api/" + path, {
+          credentials: "same-origin",
+          headers: {
+            "Content-Type": "application/json",
+            ...(options.headers || {}),
+          },
+          ...options,
+        });
+        let data = {};
+        try {
+          data = await response.json();
+        } catch {}
+        if (!response.ok)
+          throw new Error(
+            data.error || "Não foi possível concluir a operação.",
+          );
+        return data;
+      }
+      function showScreen(id) {
+        document
+          .querySelectorAll(".screen")
+          .forEach((s) => s.classList.remove("open"));
+        if (id) $(id).classList.add("open");
+      }
+      function closeScreen(el) {
+        el.closest(".screen").classList.remove("open");
+      }
+      document
+        .querySelectorAll(".close")
+        .forEach((b) => b.addEventListener("click", () => closeScreen(b)));
+      document.querySelectorAll(".screen").forEach((s) =>
+        s.addEventListener("click", (e) => {
+          if (e.target === s) s.classList.remove("open");
+        }),
+      );
+      // Introdução em vídeo e autenticação
+      function hideIntro() {
+        $("introVideo").pause();
+        $("introScreen").classList.add("hidden");
+        localStorage.setItem("qrewrkIntroSeen_v2", "1");
+      }
+      $("skipIntro").addEventListener("click", hideIntro);
+      $("introVideo").addEventListener("ended", hideIntro);
+      if (localStorage.getItem("qrewrkIntroSeen_v2") === "1")
+        $("introScreen").classList.add("hidden");
+      function setAuthMode(mode) {
+        authMode = mode;
+        $("authTitle").textContent =
+          mode === "login" ? "Acesso ao sistema" : "Criar conta";
+        $("authSubmit").textContent =
+          mode === "login" ? "ENTRAR" : "CRIAR CONTA";
+        $("showLogin").classList.toggle("active", mode === "login");
+        $("showRegister").classList.toggle("active", mode === "register");
+        $("password").autocomplete =
+          mode === "login" ? "current-password" : "new-password";
+        $("authMessage").textContent = "";
+      }
+      $("showLogin").onclick = () => setAuthMode("login");
+      $("showRegister").onclick = () => setAuthMode("register");
+      async function refreshMe() {
+        const d = await api("me");
+        user = d.user;
+        inventory = d.inventory || [];
+        catalog = d.catalog || {};
+        scores = d.scores || [];
+        if (user) {
+          $("authBox").classList.add("hidden");
+          $("menuBox").classList.remove("hidden");
+          $("menuBox").classList.add("menu-enter");
+          $("welcome").textContent =
+            `PILOTO: ${user.nickname}  •  CONTA CONECTADA`;
+          $("optionUser").textContent = `Conta conectada: ${user.nickname}`;
+        } else {
+          $("menuBox").classList.add("hidden");
+          $("authBox").classList.remove("hidden");
+          setAuthMode("login");
+        }
+      }
+      $("authForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        $("authMessage").textContent = "Conectando...";
+        try {
+          const d = await api(authMode === "login" ? "login" : "register", {
+            method: "POST",
+            body: JSON.stringify({
+              nickname: $("nickname").value.trim(),
+              password: $("password").value,
+            }),
+          });
+          user = d.user;
+          $("password").value = "";
+          $("authBox").classList.add("auth-exit");
+          setTimeout(async () => {
+            $("authBox").classList.add("hidden");
+            $("authBox").classList.remove("auth-exit");
+            await refreshMe();
+          }, 350);
+        } catch (err) {
+          $("authMessage").textContent = err.message;
+        }
+      });
+      document.querySelectorAll("[data-screen]").forEach((b) =>
+        b.addEventListener("click", async () => {
+          showScreen(b.dataset.screen);
+          if (b.dataset.screen === "shopScreen") {
+            shopTab = "inventory";
+            await renderShop();
+          }
+          if (b.dataset.screen === "scoreScreen") await renderScores(scoreMode);
+        }),
+      );
+      document.querySelectorAll("[data-shop]").forEach((b) =>
+        b.addEventListener("click", () => {
+          shopTab = b.dataset.shop;
+          document
+            .querySelectorAll("[data-shop]")
+            .forEach((x) => x.classList.toggle("active", x === b));
+          renderShop();
+        }),
+      );
+      // Loja, inventário e power-ups
+      function owned(itemId) {
+        return inventory.find((x) => x.item_id === itemId);
+      }
+      function coins() {
+        return Number(user?.coins || 0);
+      }
+      function visual(itemId, item) {
+        if (item.asset) return `<img src="${item.asset}" alt="${item.name}">`;
+        const icons = {
+          power_triple: "✦✦✦",
+          power_fan: "`|´",
+          power_shield: "🛡️",
+          power_frenzy: "🔥",
+          ship_azul: "🚀",
+          ship_fantasma: "✧",
+        };
+        return `<span>${icons[itemId] || "✦"}</span>`;
+      }
+      function card(itemId, item, mode) {
+        const own = owned(itemId);
+        let action = "",
+          price = `<div class="price">${item.price === 0 ? "GRÁTIS" : item.price + " moedas"}</div>`;
+        if (mode === "inventory") {
+          price = "";
+          if (item.kind === "powerup")
+            action = `<button class="button" data-toggle="${itemId}" data-active="${own.active ? "1" : "0"}">${own.active ? "DESATIVAR" : "ATIVAR"}</button>`;
+          else
+            action = `<div style="display:grid;gap:6px;width:100%"><button class="button" data-equip="${itemId}" data-slot="p1">${own.equipped_p1 ? "✓ EQUIPADA P1" : "EQUIPAR P1"}</button><button class="button" data-equip="${itemId}" data-slot="p2">${own.equipped_p2 ? "✓ EQUIPADA P2" : "EQUIPAR P2"}</button></div>`;
+        } else
+          action = `<button class="button" data-buy="${itemId}" ${own || coins() < item.price ? "disabled" : ""}>${own ? "ADQUIRIDO" : coins() < item.price ? "MOEDAS INSUFICIENTES" : "COMPRAR"}</button>`;
+        return `<article class="card"><div class="product-visual">${visual(itemId, item)}</div><h3>${item.name}</h3>${price}${action}</article>`;
+      }
+      async function renderShop() {
+        try {
+          const d = await api("me");
+          user = d.user;
+          inventory = d.inventory || [];
+          catalog = d.catalog || {};
+          $("coinBalance").textContent = coins();
+          const items = Object.entries(catalog).filter(([id, item]) =>
+            shopTab === "inventory"
+              ? !!owned(id)
+              : shopTab === "ships"
+                ? item.kind === "ship"
+                : item.kind === "powerup",
+          );
+          let html = "";
+          if (shopTab === "inventory") {
+            html = `<div class="tabs"><button class="tab ${inventorySub === "ships" ? "active" : ""}" data-inv-sub="ships">NAVES</button><button class="tab ${inventorySub === "powerups" ? "active" : ""}" data-inv-sub="powerups">POWER-UPS</button></div>`;
+            const selected = items.filter(([id, item]) =>
+              inventorySub === "ships"
+                ? item.kind === "ship"
+                : item.kind === "powerup",
+            );
+            html += selected.length
+              ? `<div class="grid">${selected.map(([id, item]) => card(id, item, "inventory")).join("")}</div>`
+              : `<p class="muted">Nenhum item nessa categoria.</p>`;
+          } else
+            html = items.length
+              ? `<div class="grid">${items.map(([id, item]) => card(id, item, "shop")).join("")}</div>`
+              : "";
+          $("shopContent").innerHTML = html;
+          $("shopMessage").textContent = "";
+          document.querySelectorAll("[data-inv-sub]").forEach(
+            (b) =>
+              (b.onclick = () => {
+                inventorySub = b.dataset.invSub;
+                renderShop();
+              }),
+          );
+          document
+            .querySelectorAll("[data-buy]")
+            .forEach((b) => (b.onclick = () => purchase(b.dataset.buy)));
+          document
+            .querySelectorAll("[data-toggle]")
+            .forEach(
+              (b) =>
+                (b.onclick = () =>
+                  togglePower(b.dataset.toggle, b.dataset.active !== "1")),
+            );
+          document
+            .querySelectorAll("[data-equip]")
+            .forEach(
+              (b) => (b.onclick = () => equip(b.dataset.equip, b.dataset.slot)),
+            );
+        } catch (e) {
+          $("shopMessage").textContent = e.message;
+        }
+      }
+      async function purchase(id) {
+        try {
+          await api("purchase", {
+            method: "POST",
+            body: JSON.stringify({ item_id: id }),
+          });
+          await renderShop();
+          $("shopMessage").textContent = "Compra realizada com sucesso!";
+        } catch (e) {
+          $("shopMessage").textContent = e.message;
+        }
+      }
+      async function togglePower(id, active) {
+        try {
+          await api("toggle-powerup", {
+            method: "POST",
+            body: JSON.stringify({ item_id: id, active }),
+          });
+          await renderShop();
+          $("shopMessage").textContent = active
+            ? "Power-up ativado."
+            : "Power-up desativado.";
+        } catch (e) {
+          $("shopMessage").textContent = e.message;
+        }
+      }
+      async function equip(id, slot) {
+        try {
+          await api("equip-ship", {
+            method: "POST",
+            body: JSON.stringify({ item_id: id, slot }),
+          });
+          await renderShop();
+          $("shopMessage").textContent =
+            `Nave equipada para ${slot.toUpperCase()}.`;
+        } catch (e) {
+          $("shopMessage").textContent = e.message;
+        }
+      }
+      document.querySelectorAll("[data-score-mode]").forEach(
+        (b) =>
+          (b.onclick = () => {
+            scoreMode = b.dataset.scoreMode;
+            document
+              .querySelectorAll("[data-score-mode]")
+              .forEach((x) => x.classList.toggle("active", x === b));
+            renderScores(scoreMode);
+          }),
+      );
+      // Placar e pontuações pessoais
+      async function renderScores(mode) {
+        $("scoreContent").innerHTML =
+          '<p class="muted">Carregando placar...</p>';
+        try {
+          const d = await api("leaderboard?mode=" + mode);
+          $("scoreContent").innerHTML =
+            `<div class="personal">SEU RECORDE: <strong>${Number(d.personal_best || 0).toLocaleString("pt-BR")}</strong></div><table class="leaderboard"><thead><tr><th>#</th><th>PILOTO</th><th>PONTOS</th></tr></thead><tbody>${d.top.length ? d.top.map((r, i) => `<tr><td>${i + 1}</td><td>${escapeHtml(r.nickname)}</td><td>${Number(r.best_score).toLocaleString("pt-BR")}</td></tr>`).join("") : '<tr><td colspan="3">Ainda não há pontuações.</td></tr>'}</tbody></table>`;
+        } catch (e) {
+          $("scoreContent").textContent = e.message;
+        }
+      }
+      function escapeHtml(s) {
+        return String(s).replace(
+          /[&<>"']/g,
+          (c) =>
+            ({
+              "&": "&amp;",
+              "<": "&lt;",
+              ">": "&gt;",
+              '"': "&quot;",
+              "'": "&#39;",
+            })[c],
+        );
+      }
+      // Opções e ações da conta
+      $("switchAccount").onclick = async () => {
+        try {
+          await api("logout", { method: "POST", body: "{}" });
+          user = null;
+          inventory = [];
+          showScreen(null);
+          await refreshMe();
+        } catch (e) {
+          $("optionsMessage").textContent = e.message;
+        }
+      };
+      $("deleteAccount").onclick = () => {
+        confirmAction = "delete";
+        $("confirmTitle").textContent = "EXCLUIR CONTA";
+        $("confirmText").textContent =
+          "Esta ação é permanente. Todos os dados desta conta serão apagados.";
+        $("confirmAction").textContent = "EXCLUIR DEFINITIVAMENTE";
+        $("confirmMessage").textContent = "";
+        $("confirmPassword").value = "";
+        showScreen("confirmScreen");
+      };
+      $("cancelConfirm").onclick = () => showScreen(null);
+      $("confirmForm").onsubmit = async (e) => {
+        e.preventDefault();
+        if (confirmAction !== "delete") return;
+        try {
+          await api("delete-account", {
+            method: "POST",
+            body: JSON.stringify({ password: $("confirmPassword").value }),
+          });
+          user = null;
+          showScreen(null);
+          await refreshMe();
+        } catch (err) {
+          $("confirmMessage").textContent = err.message;
+        }
+      };
+      // Inicialização da página
+      async function init() {
+        if (!$("introScreen").classList.contains("hidden")) {
+          $("introScreen").addEventListener("transitionend", () => {});
+          $("introVideo").addEventListener(
+            "error",
+            () => $("introError").classList.remove("hidden"),
+            { once: true },
+          );
+        }
+        try {
+          await refreshMe();
+        } catch (e) {
+          $("authBox").classList.remove("hidden");
+          $("authMessage").textContent =
+            "Não foi possível conectar ao servidor.";
+        }
+      }
+      init();
+    </script>
+  </body>
+</html>
