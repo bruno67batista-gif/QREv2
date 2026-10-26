@@ -1220,25 +1220,45 @@
 
       skipWave4Video.addEventListener("click", iniciarWave4);
 
-      function saveRun() {
-        if (runSaved) return;
-        runSaved = true;
-        fetch("/api/finish-run", {
-          method: "POST",
-          credentials: "same-origin",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ mode: selectedMode, score, coins: runCoins }),
-        })
-          .then((r) => r.json())
-          .then((d) => {
-            if (d.coins !== undefined)
-              statusText.innerHTML = `Moedas salvas: ${d.coins}<br>Recorde atualizado`;
-          })
-          .catch(() => {
-            statusText.innerHTML =
-              "Não foi possível salvar o progresso. Verifique sua conexão.";
-          });
-      }
+async function saveRun() {
+  if (runSaved) return;
+
+  runSaved = true;
+
+  try {
+    const response = await fetch(
+      "https://qre-backend.onrender.com/api/finish-run",
+      {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          mode: selectedMode,
+          score: score,
+          coins: runCoins,
+        }),
+      },
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Não foi possível salvar a partida.");
+    }
+
+    if (data.coins !== undefined) {
+      statusText.innerHTML =
+        `Moedas salvas: ${data.coins}<br>Recorde atualizado`;
+    }
+  } catch (error) {
+    console.error("Erro ao salvar a partida:", error);
+
+    statusText.textContent =
+      "Não foi possível salvar o progresso. Verifique sua conexão.";
+  }
+}
       function updatePowerups(dt) {
         powerupSpawnTimer += dt;
         const available = activePowerups.filter((id) =>
@@ -1730,11 +1750,11 @@ async function loadGameProfile() {
 
     const asset1 =
       data.catalog?.[equipped1?.item_id]?.asset ||
-      "assets/player.png";
+      "assets/alpha.png";
 
     const asset2 =
       data.catalog?.[equipped2?.item_id]?.asset ||
-      "assets/player2.png";
+      "assets/omega.png";
 
     playerImage.src = asset1;
     player2Image.src = asset2;
