@@ -147,6 +147,33 @@ def safe_user(user):
 
 
 class GameHandler(SimpleHTTPRequestHandler):
+    def end_headers(self):
+    origin = self.headers.get("Origin")
+    if origin == "https://bruno67batista-gif.github.io":
+        self.send_header(
+            "Access-Control-Allow-Origin",
+            "https://bruno67batista-gif.github.io",
+        )
+        self.send_header("Access-Control-Allow-Credentials", "true")
+        self.send_header("Vary", "Origin")
+    super().end_headers()
+
+def do_OPTIONS(self):
+    origin = self.headers.get("Origin")
+    if origin != "https://bruno67batista-gif.github.io":
+        return self.send_json(403, {"error": "Origem não permitida."})
+
+    self.send_response(204)
+    self.send_header(
+        "Access-Control-Allow-Origin",
+        "https://bruno67batista-gif.github.io",
+    )
+    self.send_header("Access-Control-Allow-Credentials", "true")
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+    self.send_header("Access-Control-Allow-Headers", "Content-Type")
+    self.send_header("Access-Control-Max-Age", "600")
+    self.send_header("Vary", "Origin")
+    self.end_headers()
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=str(ROOT), **kwargs)
 
@@ -543,7 +570,7 @@ class GameHandler(SimpleHTTPRequestHandler):
         user = sql(
             conn, pg, "SELECT id,nickname,coins FROM users WHERE id=?", (user_id,)
         ).fetchone()
-        header = f"{COOKIE_NAME}={token}; HttpOnly; Path=/; SameSite=Lax; Max-Age={SESSION_DAYS * 86400}"
+        header = f"{COOKIE_NAME}={token}; HttpOnly; Path=/; SameSite=None; Secure; Max-Age={SESSION_DAYS * 86400}"
         if (
             os.environ.get("COOKIE_SECURE", "").lower() in ("1", "true", "yes")
             or self.headers.get("X-Forwarded-Proto") == "https"
