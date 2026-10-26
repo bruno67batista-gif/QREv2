@@ -561,16 +561,7 @@
 
   return data;
 }
-        let data = {};
-        try {
-          data = await response.json();
-        } catch {}
-        if (!response.ok)
-          throw new Error(
-            data.error || "Não foi possível concluir a operação.",
-          );
-        return data;
-      }
+       
       function showScreen(id) {
         document
           .querySelectorAll(".screen")
