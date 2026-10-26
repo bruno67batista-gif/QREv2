@@ -148,15 +148,15 @@ def safe_user(user):
 
 class GameHandler(SimpleHTTPRequestHandler):
     def end_headers(self):
-    origin = self.headers.get("Origin")
-    if origin == "https://bruno67batista-gif.github.io":
-        self.send_header(
-            "Access-Control-Allow-Origin",
-            "https://bruno67batista-gif.github.io",
-        )
-        self.send_header("Access-Control-Allow-Credentials", "true")
-        self.send_header("Vary", "Origin")
-    super().end_headers()
+        origin = self.headers.get("Origin")
+        if origin == "https://bruno67batista-gif.github.io":
+            self.send_header(
+                "Access-Control-Allow-Origin",
+                "https://bruno67batista-gif.github.io",
+            )
+            self.send_header("Access-Control-Allow-Credentials", "true")
+            self.send_header("Vary", "Origin")
+        super().end_headers()
 
 def do_OPTIONS(self):
     origin = self.headers.get("Origin")
