@@ -557,17 +557,7 @@
     },
   );
 
-  let data = {};
-
-  try {
-    data = await response.json();
-  } catch {}
-
-  if (!response.ok) {
-    throw new Error(
-      data.error || "Não foi possível concluir a operação.",
-    );
-  }
+  
 
   return data;
 }
@@ -904,12 +894,7 @@
         }
       }
       init();
-      refreshMe().catch((err) => {
-        console.error("Erro ao inicializar a conta:", err);
-        $("authBox").classList.remove("hidden");
-        $("menuBox").classList.add("hidden");
-        setAuthMode("login");
-      });
+      
     </script>
   </body>
 </html>
